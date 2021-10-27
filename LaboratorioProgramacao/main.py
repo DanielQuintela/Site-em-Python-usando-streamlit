@@ -1,5 +1,8 @@
 import streamlit as st
+import sqlite3
 
+con = sqlite3.connect('banco_programa.db')
+cursor = con.cursor()
 
 st.title("Tela Cadastro :3")
 
@@ -11,3 +14,7 @@ with st.form(key='include_cliente'):
 
 if input_button_enviar:
     st.write(f'Nome{input_name}')
+    cursor.execute(f"INSERT INTO cadastro VALUES ('{input_name}','{input_senha}','{input_occupation}')")
+    con.commit()
+
+    
