@@ -10,18 +10,19 @@ if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
 
 elif paginaSelecionada == 'Login funcionário':
-    st.title("Login Funcionário")
-    funcionarios = st.selectbox('Selecione o caminho',['Login','Cadastro'])
+    st.sidebar.title("Login Funcionário")
+    funcionarios = st.sidebar.selectbox('Selecione o caminho',['Login','Cadastro'])
 
     if funcionarios == 'Login':
-        with st.form(key='include_cliente'):
-            input_cpf_func = st.text_input(label='Insira o seu CPF')
-            input_senha_func = st.text_input(label='Insira a senha', type="password")
-            input_button_login = st.form_submit_button("Login")
-        if input_button_login:
-            st.title('Logado')
+            input_cpf_func = st.sidebar.text_input(label='Insira o seu CPF')
+            input_senha_func = st.sidebar.text_input(label='Insira a senha', type="password")
+            login_pesquisador = st.sidebar.checkbox('Login')
+            if login_pesquisador:
+               st.sidebar.title('Funcionário logado')
+               st.title('TESTE')
 
     if funcionarios == 'Cadastro':
+        st.title('Cadastro de Pesquisador')
         with st.form(key='include_cliente'):
             input_name = st.text_input(label='Insira o seu nome')
             input_senha = st.text_input(label='Insira a senha', type="password")
@@ -38,14 +39,17 @@ elif paginaSelecionada == 'Login funcionário':
 
 
 elif paginaSelecionada == 'Login Secretária':
-    st.title("Login Secretária")
-    genre = st.radio("Escolha um pesquisador", ('teste1', 'teste2', 'teste3'))
-    if genre == 'teste1':
-        st.write('Você seleionou um pesquisador.')
+    login_secretaria = st.sidebar.checkbox('Login')
+    if login_secretaria:
+        st.sidebar.title('Secretária logada')
+        st.title("Área da Secretária")
+        genre = st.radio("Escolha um pesquisador", ('teste1', 'teste2', 'teste3'))
+        if genre == 'teste1':
+           st.write('Você seleionou um pesquisador.')
 
 
 elif paginaSelecionada == 'Login Presidente':
-    st.title("Login Presidente")
-
-    with st.form(key='include_cliente'):
-        input_button_login_Presidente = st.form_submit_button('Login')
+    st.sidebar.title("Login Presidente")
+    login_presidente = st.sidebar.checkbox('Login')
+    if login_presidente:
+        st.title('teste')
