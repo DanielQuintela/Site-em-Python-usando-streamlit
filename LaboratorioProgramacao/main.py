@@ -34,9 +34,9 @@ elif paginaSelecionada == 'Área do funcionário':
             result = login_user(cpf, senha)
             if result:
 
-                st.title('Opaa, olha ai man')
-        	else:
-            	st.warning("Usuário incorreto")
+                st.title('Opaa, olha ai sss')
+            else:
+                st.warning("Usuário incorreto")
 
     if funcionarios == 'Cadastro':
             st.title('Cadastro de Pesquisador')
@@ -47,7 +47,7 @@ elif paginaSelecionada == 'Área do funcionário':
 
             if st.button("Enviar Dados"):
                 create_usertable()
-                add_userdata(input_name,input_senha,input_cpf,input_occupation)
+                add_userdata(input_name,input_senha,input_occupation,input_cpf)
                 st.success('Adicionado com sucesso !!')
                 st.info("Vá para o menu de login!!")
 
