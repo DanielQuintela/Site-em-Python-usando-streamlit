@@ -4,12 +4,12 @@ import sqlite3
 con = sqlite3.connect('banco_programa.db')
 cursor = con.cursor()
 
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio','Login Presidente','Login Secretária','Login funcionário'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio','Área do funcionário','Login Secretária','Login Presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
 
-elif paginaSelecionada == 'Login funcionário':
+elif paginaSelecionada == 'Área do funcionário':
     st.sidebar.title("Login Funcionário")
     funcionarios = st.sidebar.selectbox('Selecione o caminho',['Login','Cadastro'])
 
@@ -48,7 +48,7 @@ elif paginaSelecionada == 'Login Secretária':
            st.write('Você seleionou um pesquisador.')
 
 
-elif paginaSelecionada == 'Login Presidente':
+elif paginaSelecionada == 'Login do Presidente':
     st.sidebar.title("Login Presidente")
     login_presidente = st.sidebar.checkbox('Login')
     if login_presidente:
