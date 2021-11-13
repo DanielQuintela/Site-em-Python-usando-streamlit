@@ -10,8 +10,8 @@ def add_userdata(nome,senha, ocupacao, cpf):
 	cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf) VALUES (?,?,?,?)',(nome,senha, ocupacao, cpf))
 	con.commit()
 
-def login_user(cpf,senha):
-	cursor.execute('SELECT * FROM pesquisador WHERE cpf =? AND senha = ?',(cpf,senha))
+def login_user(nome,senha):
+	cursor.execute('SELECT * FROM pesquisador WHERE nome = ? AND senha = ?',(nome,senha))
 	data = cursor.fetchall()
 	return data
 
@@ -21,20 +21,22 @@ paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
 
+
 elif paginaSelecionada == 'Área do funcionário':
     st.sidebar.title("Login Funcionário")
     funcionarios = st.sidebar.selectbox('Selecione o caminho',['Login','Cadastro'])
 
     if funcionarios == 'Login':
-        cpf = st.sidebar.text_input('Insira o seu CPF')
+        nome = st.sidebar.text_input('Insira seu nome')
         senha = st.sidebar.text_input('Insira a senha', type='password')
         if st.sidebar.checkbox('Login'):
         # if input_senha_func == '1234':
             create_usertable()
-            result = login_user(cpf, senha)
+            result = login_user(nome, senha)
             if result:
+                st.sidebar.title(f"Logado como: {nome}")
+                st.title(f'Bem vindo de Volta {nome}')
 
-                st.title('Opaa, olha ai sss')
             else:
                 st.warning("Usuário incorreto")
 
