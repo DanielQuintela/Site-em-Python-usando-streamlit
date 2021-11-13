@@ -1,8 +1,20 @@
 import streamlit as st
 import sqlite3
-
 con = sqlite3.connect('banco_programa.db')
 cursor = con.cursor()
+
+def create_usertable():
+	cursor.execute('CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC)')
+
+def add_userdata(nome,senha, ocupacao, cpf):
+	cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf) VALUES (?,?,?,?)',(nome,senha, ocupacao, cpf))
+	con.commit()
+
+def login_user(cpf,senha):
+	cursor.execute('SELECT * FROM pesquisador WHERE cpf =? AND senha = ?',(cpf,senha))
+	data = cursor.fetchall()
+	return data
+
 
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio','Área do funcionário','Login Secretária','Login Presidente'])
 
@@ -14,28 +26,30 @@ elif paginaSelecionada == 'Área do funcionário':
     funcionarios = st.sidebar.selectbox('Selecione o caminho',['Login','Cadastro'])
 
     if funcionarios == 'Login':
-            input_cpf_func = st.sidebar.text_input(label='Insira o seu CPF')
-            input_senha_func = st.sidebar.text_input(label='Insira a senha', type="password")
-            login_pesquisador = st.sidebar.checkbox('Login')
-            if login_pesquisador:
-               st.sidebar.title('Funcionário logado')
-               st.title('TESTE')
+        cpf = st.sidebar.text_input('Insira o seu CPF')
+        senha = st.sidebar.text_input('Insira a senha', type='password')
+        if st.sidebar.checkbox('Login'):
+        # if input_senha_func == '1234':
+            create_usertable()
+            result = login_user(cpf, senha)
+            if result:
+
+                st.title('Opaa, olha ai man')
+        else:
+            st.warning("Usuário incorreto")
 
     if funcionarios == 'Cadastro':
-        st.title('Cadastro de Pesquisador')
-        with st.form(key='include_cliente'):
+            st.title('Cadastro de Pesquisador')
             input_name = st.text_input(label='Insira o seu nome')
             input_senha = st.text_input(label='Insira a senha', type="password")
             input_cpf = st.text_input(label='Insira o seu CPF')
             input_occupation = st.selectbox('selecione sua profissão', ['Pesquisador'])
-            input_button_enviar = st.form_submit_button("Enviar Dados")
 
-        if input_button_enviar:
-            cursor.execute(
-                f"INSERT INTO cadastro VALUES ('{input_name}','{input_senha}',{input_cpf},'{input_occupation}')")
-            con.commit()
-
-            st.success('Adicionado com sucesso !!')
+            if st.button("Enviar Dados"):
+                create_usertable()
+                add_userdata(input_name,input_senha,input_cpf,input_occupation)
+                st.success('Adicionado com sucesso !!')
+                st.info("Vá para o menu de login!!")
 
 
 elif paginaSelecionada == 'Login Secretária':
