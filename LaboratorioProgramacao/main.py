@@ -15,6 +15,36 @@ def login_user(nome,senha):
 	data = cursor.fetchall()
 	return data
 
+def aprovar_cadastro():
+    escolha = st.selectbox('', ['Escolha uma função', 'aprovar', 'remover'])
+    if escolha == 'Escolha uma função':
+        st.title('Pesquisador em análise:')
+        cursor.execute('SELECT nome from pesquisador')
+        x = cursor.fetchone()
+        a = 1
+        while a > 0:
+            st.title(x)
+            a = a - 1
+
+    if escolha == 'aprovar':
+        cursor.execute('SELECT nome from pesquisador')
+        k = cursor.fetchone()
+        cursor.execute('SELECT senha from pesquisador')
+        l = cursor.fetchone()
+        cursor.execute('SELECT cpf from pesquisador')
+        m = cursor.fetchone()
+        st.title(k)
+        st.title(l)
+        st.title(m)
+        '''Nessa parte aqui eu to tendo dificuldade em mandar pra um novo banco de dados de pesquisadores aprovados, igual vc fez la encima 
+        
+        cursor.execute(f'INSERT INTO pesquisadores_aprovados(nome,senha,cpf) VALUES(?,?,?)',(k,l,m))
+        '''
+        st.title('Funcionário aceito!')
+
+    if escolha == 'remover':
+        cursor.execute('DELETE from pesquisador')
+        st.title('Funcionário não aceito!')
 
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio','Área do funcionário','Login Secretária','Login Presidente'])
 
@@ -59,9 +89,10 @@ elif paginaSelecionada == 'Login Secretária':
     if login_secretaria:
         st.sidebar.title('Secretária logada')
         st.title("Área da Secretária")
-        genre = st.radio("Escolha um pesquisador", ('teste1', 'teste2', 'teste3'))
-        if genre == 'teste1':
-           st.write('Você seleionou um pesquisador.')
+        y = st.selectbox('Escolha um caminho',['Aprovação de pesquisadores','NULL'])
+        if y == 'Aprovação de pesquisadores':
+            aprovar_pesquisador = st.title(aprovar_cadastro())
+
 
 
 elif paginaSelecionada == 'Login do Presidente':
