@@ -46,7 +46,7 @@ def aprovar_cadastro():
         cursor.execute('DELETE from pesquisador')
         st.title('Funcionário não aceito!')
 
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio','Área do funcionário','Login Secretária','Login Presidente'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho', ['Tela de inicio','Área do funcionário','Login Secretária','Login do Presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
