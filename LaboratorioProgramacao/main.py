@@ -19,6 +19,17 @@ def login_user(nome, senha):
     data = cursor.fetchall()
     return data
 
+def create_presdenttable():
+    cursor.execute('CREATE TABLE IF NOT EXISTS presidente(nome TEXT,senha TEXT)')
+
+def add_presidente(nome, senha):
+    cursor.execute('INSERT INTO presidente(nome,senha) VALUES (?,?)', (nome, senha))
+    con.commit()
+
+def login_presidente(nome, senha):
+    cursor.execute('SELECT * FROM presidente WHERE nome = ? AND senha = ?', (nome, senha))
+    data = cursor.fetchall()
+    return data
 
 def aprovar_cadastro():
     escolha = st.selectbox('', ['Escolha uma função', 'aprovar', 'remover'])
@@ -52,7 +63,7 @@ def aprovar_cadastro():
         st.title('Funcionário não aceito!')
 
 
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente','Cadastro presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
@@ -70,6 +81,7 @@ elif paginaSelecionada == 'Área do funcionário':
             create_usertable()
             result = login_user(nome, senha)
             if result:
+
                 st.sidebar.title(f"Logado como: {nome}")
                 st.title(f'Bem vindo de Volta {nome}')
 
@@ -103,6 +115,28 @@ elif paginaSelecionada == 'Login Secretária':
 
 elif paginaSelecionada == 'Login Presidente':
     st.sidebar.title("Login Presidente")
-    login_presidente = st.sidebar.checkbox('Login')
-    if login_presidente:
-        st.title('teste')
+    nome = st.sidebar.text_input('Insira seu nome')
+    senha = st.sidebar.text_input('Insira a senha', type='password')
+    if st.sidebar.checkbox('Login'):
+        create_presdenttable()
+        result = login_presidente(nome, senha)
+        if result:
+            st.sidebar.title(f"Logado como: {nome}")
+            st.title(f'Bem vindo de Volta {nome}')
+
+        else:
+            st.warning("Usuário incorreto")
+
+#esse elif é para fica oculto do sistema.
+#apenas para o cadastro do presidente
+elif paginaSelecionada == 'Cadastro presidente':
+    #só pra quebrar o galho no banco
+    st.title('Cadastro de Presidente')
+    input_name = st.text_input(label='Insira o seu nome')
+    input_senha = st.text_input(label='Insira a senha', type="password")
+
+    if st.button("Enviar Dados"):
+        create_presdenttable()
+        add_presidente(input_name, input_senha)
+        st.success('Adicionado com sucesso !!')
+        st.info("Vá para o menu de login!!")
