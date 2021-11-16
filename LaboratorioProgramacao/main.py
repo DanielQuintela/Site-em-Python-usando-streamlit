@@ -4,21 +4,20 @@ import sqlite3
 con = sqlite3.connect('banco_programa.db')
 cursor = con.cursor()
 
-
+#Moderador de pesquisador
 def create_usertable():
     cursor.execute('CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC)')
-
 
 def add_userdata(nome, senha, ocupacao, cpf):
     cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf) VALUES (?,?,?,?)', (nome, senha, ocupacao, cpf))
     con.commit()
-
 
 def login_user(nome, senha):
     cursor.execute('SELECT * FROM pesquisador WHERE nome = ? AND senha = ?', (nome, senha))
     data = cursor.fetchall()
     return data
 
+#moderador de presidente
 def create_presdenttable():
     cursor.execute('CREATE TABLE IF NOT EXISTS presidente(nome TEXT,senha TEXT)')
 
@@ -31,8 +30,7 @@ def login_presidente(nome, senha):
     data = cursor.fetchall()
     return data
 
-#cadastro da funcionára
-
+#moderador da funcionára
 def create_secretaria():
     cursor.execute('CREATE TABLE IF NOT EXISTS secretaria2(nome TEXT,senha TEXT)')
 
@@ -45,6 +43,8 @@ def login_secretaria(nome, senha):
     data = cursor.fetchall()
     return data
 
+#moderador das listas da interface 
+#da secretária
 def aprovar_cadastro():
     escolha = st.selectbox('', ['Escolha uma função', 'aprovar', 'remover'])
     if escolha == 'Escolha uma função':
@@ -77,7 +77,8 @@ def aprovar_cadastro():
         st.title('Funcionário não aceito!')
 
 
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente','Cadastro presidente'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária',
+                                                                'Login Presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
