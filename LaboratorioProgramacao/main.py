@@ -31,6 +31,20 @@ def login_presidente(nome, senha):
     data = cursor.fetchall()
     return data
 
+#cadastro da funcionára
+
+def create_secretaria():
+    cursor.execute('CREATE TABLE IF NOT EXISTS secretaria2(nome TEXT,senha TEXT)')
+
+def add_secretaria(nome, senha):
+    cursor.execute('INSERT INTO secretaria2(nome,senha) VALUES (?,?)', (nome, senha))
+    con.commit()
+
+def login_secretaria(nome, senha):
+    cursor.execute('SELECT * FROM secretaria2 WHERE nome = ? AND senha = ?', (nome, senha))
+    data = cursor.fetchall()
+    return data
+
 def aprovar_cadastro():
     escolha = st.selectbox('', ['Escolha uma função', 'aprovar', 'remover'])
     if escolha == 'Escolha uma função':
@@ -103,13 +117,21 @@ elif paginaSelecionada == 'Área do funcionário':
 
 
 elif paginaSelecionada == 'Login Secretária':
-    login_secretaria = st.sidebar.checkbox('Login')
-    if login_secretaria:
-        st.sidebar.title('Secretária logada')
-        st.title("Área da Secretária")
-        y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'NULL'])
-        if y == 'Aprovação de pesquisadores':
-            aprovar_pesquisador = st.title(aprovar_cadastro())
+    st.sidebar.title("Login Secretária")
+    nome = st.sidebar.text_input('Insira seu nome')
+    senha = st.sidebar.text_input('Insira a senha', type='password')
+    if st.sidebar.checkbox('Login'):
+        create_secretaria()
+        result = login_secretaria(nome, senha)
+        if result:
+            if login_secretaria:
+                st.sidebar.title('Secretária logada')
+                st.title("Área da Secretária")
+                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'NULL'])
+                if y == 'Aprovação de pesquisadores':
+                    aprovar_pesquisador = st.title(aprovar_cadastro())
+        else:
+            st.warning("Usuário incorreto")
 
 
 
@@ -122,7 +144,20 @@ elif paginaSelecionada == 'Login Presidente':
         result = login_presidente(nome, senha)
         if result:
             st.sidebar.title(f"Logado como: {nome}")
-            st.title(f'Bem vindo de Volta {nome}')
+            st.title(f'Bem vindo de Volta Sr {nome}')
+            st.text('Presidente na Área')
+            secretaria = st.selectbox('Escolha a função',['Inicio','Cadastro de Secretária'])
+            if secretaria == 'Cadastro de Secretária':
+                st.title('Cadastro de Secretaria')
+                input_name = st.text_input(label='Insira o seu nome')
+                input_senha = st.text_input(label='Insira sua senha', type="password")
+                if st.button("Enviar Dados"):
+                    create_secretaria()
+                    add_secretaria(input_name, input_senha)
+                    st.success(f'{input_name} Adicionada com sucesso !!')
+                    st.info("Vá para o menu de login!!")
+            elif secretaria == 'Inicio':
+                st.title('Pagina do Diretor')
 
         else:
             st.warning("Usuário incorreto")
