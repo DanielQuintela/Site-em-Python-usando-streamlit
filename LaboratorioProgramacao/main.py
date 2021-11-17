@@ -55,7 +55,7 @@ def delete_data(resultado):
 	cursor.execute('DELETE FROM pesquisador WHERE nome="{}"'.format(resultado))
 	con.commit()
 
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente','Cadastro presidente'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
@@ -86,6 +86,7 @@ elif paginaSelecionada == 'Área do funcionário':
         input_senha = st.text_input(label='Insira a senha', type="password")
         input_cpf = st.text_input(label='Insira o seu CPF')
         input_occupation = st.selectbox('selecione sua profissão', ['Pesquisador'])
+        
 
         if st.button("Enviar Dados"):
             create_usertable()
@@ -105,7 +106,7 @@ elif paginaSelecionada == 'Login Secretária':
             if login_secretaria:
                 st.sidebar.title('Secretária logada')
                 st.title("Área da Secretária")
-                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'NULL'])
+                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores'])
                 if y == 'Aprovação de pesquisadores':
                     recarregar = st.checkbox('Mostar Dados')
                     if recarregar:
