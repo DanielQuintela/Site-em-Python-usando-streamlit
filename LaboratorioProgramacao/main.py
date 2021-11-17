@@ -159,9 +159,9 @@ elif paginaSelecionada == 'Login Presidente':
                     st.info("Vá para o menu de login!!")
             elif secretaria == 'Inicio':
                 st.title('Pagina do Diretor')
-                st.subheader('Lista de Secretárias')
+                st.subheader('Lista de Secretárias ativas')
                 dados_secretaria = cursor.execute('SELECT nome from secretaria2')
-                clean_db = pd.DataFrame(dados_secretaria, columns=['Secretárias ativas'])
+                clean_db = pd.DataFrame(dados_secretaria, columns=['Secretárias:'])
                 st.dataframe(clean_db)
 
 
