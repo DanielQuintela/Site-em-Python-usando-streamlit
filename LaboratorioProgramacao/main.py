@@ -55,13 +55,13 @@ def delete_data(resultado):
 	cursor.execute('DELETE FROM pesquisador WHERE nome="{}"'.format(resultado))
 	con.commit()
 
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do Pesquisador', 'Login Secretária', 'Login Presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
 
 
-elif paginaSelecionada == 'Área do funcionário':
+elif paginaSelecionada == 'Área do Pesquisador':
     st.sidebar.title("Login Funcionário")
     funcionarios = st.sidebar.selectbox('Selecione o caminho', ['Login', 'Cadastro'])
 
@@ -86,7 +86,6 @@ elif paginaSelecionada == 'Área do funcionário':
         input_senha = st.text_input(label='Insira a senha', type="password")
         input_cpf = st.text_input(label='Insira o seu CPF')
         input_occupation = st.selectbox('selecione sua profissão', ['Pesquisador'])
-        
 
         if st.button("Enviar Dados"):
             create_usertable()
@@ -106,7 +105,7 @@ elif paginaSelecionada == 'Login Secretária':
             if login_secretaria:
                 st.sidebar.title('Secretária logada')
                 st.title("Área da Secretária")
-                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores'])
+                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'NULL'])
                 if y == 'Aprovação de pesquisadores':
                     recarregar = st.checkbox('Mostar Dados')
                     if recarregar:
@@ -160,6 +159,11 @@ elif paginaSelecionada == 'Login Presidente':
                     st.info("Vá para o menu de login!!")
             elif secretaria == 'Inicio':
                 st.title('Pagina do Diretor')
+                st.subheader('Lista de Secretárias')
+                dados_secretaria = cursor.execute('SELECT nome from secretaria2')
+                clean_db = pd.DataFrame(dados_secretaria, columns=['Secretárias ativas'])
+                st.dataframe(clean_db)
+
 
         else:
             st.warning("Usuário incorreto")
