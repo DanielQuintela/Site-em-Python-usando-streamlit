@@ -1,23 +1,25 @@
+import pandas as pd
 import streamlit as st
 import sqlite3
 
 con = sqlite3.connect('banco_programa.db')
 cursor = con.cursor()
 
-#Moderador de pesquisador
+
 def create_usertable():
     cursor.execute('CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC)')
+
 
 def add_userdata(nome, senha, ocupacao, cpf):
     cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf) VALUES (?,?,?,?)', (nome, senha, ocupacao, cpf))
     con.commit()
+
 
 def login_user(nome, senha):
     cursor.execute('SELECT * FROM pesquisador WHERE nome = ? AND senha = ?', (nome, senha))
     data = cursor.fetchall()
     return data
 
-#moderador de presidente
 def create_presdenttable():
     cursor.execute('CREATE TABLE IF NOT EXISTS presidente(nome TEXT,senha TEXT)')
 
@@ -30,7 +32,8 @@ def login_presidente(nome, senha):
     data = cursor.fetchall()
     return data
 
-#moderador da funcionára
+#cadastro da funcionára
+
 def create_secretaria():
     cursor.execute('CREATE TABLE IF NOT EXISTS secretaria2(nome TEXT,senha TEXT)')
 
@@ -43,42 +46,16 @@ def login_secretaria(nome, senha):
     data = cursor.fetchall()
     return data
 
-#moderador das listas da interface 
-#da secretária
-def aprovar_cadastro():
-    escolha = st.selectbox('', ['Escolha uma função', 'aprovar', 'remover'])
-    if escolha == 'Escolha uma função':
-        st.title('Pesquisador em análise:')
-        cursor.execute('SELECT nome from pesquisador')
-        x = cursor.fetchone()
-        for i in x:
-            st.title(i)
+def view_all_titles():
+	cursor.execute('SELECT DISTINCT nome FROM pesquisador')
+	data = cursor.fetchall()
+	return data
 
-    if escolha == 'aprovar':
-        cursor.execute('SELECT nome from pesquisador')
-        k = cursor.fetchone()
-        for a in k:
-            st.title(a)
-        cursor.execute('SELECT senha from pesquisador')
-        l = cursor.fetchone()
-        for b in l:
-            st.title(b)
-        cursor.execute('SELECT cpf from pesquisador')
-        m = cursor.fetchone()
-        for c in m:
-            st.title(c)
+def delete_data(resultado):
+	cursor.execute('DELETE FROM pesquisador WHERE nome="{}"'.format(resultado))
+	con.commit()
 
-        cursor.execute(f'INSERT INTO pesquisadores_aprovados VALUES (?,?,?)', (a,b,c))
-
-        st.title('Funcionário aceito!')
-
-    if escolha == 'remover':
-        cursor.execute('DELETE from pesquisador')
-        st.title('Funcionário não aceito!')
-
-
-paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária',
-                                                                'Login Presidente'])
+paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',['Tela de inicio', 'Área do funcionário', 'Login Secretária', 'Login Presidente','Cadastro presidente'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
@@ -130,7 +107,30 @@ elif paginaSelecionada == 'Login Secretária':
                 st.title("Área da Secretária")
                 y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'NULL'])
                 if y == 'Aprovação de pesquisadores':
-                    aprovar_pesquisador = st.title(aprovar_cadastro())
+                    recarregar = st.checkbox('Mostar Dados')
+                    if recarregar:
+                        st.subheader('Pesquisadores em análise')
+                        resultado = cursor.execute('SELECT nome,cpf from pesquisador')
+                        clean_db = pd.DataFrame(resultado, columns=['Pesquisadores', 'cpf'])
+                        st.dataframe(clean_db)
+                        with st.form(key='include_cliente'):
+                            st.subheader('Selecione o que deseja realizar')
+                            aprovar = st.form_submit_button("Aprovar")
+                            remover = st.form_submit_button("Remover")
+
+                            unique_titles = [i[0] for i in view_all_titles()]
+                            delete_blog_by_title = st.selectbox("Pesquisadores", unique_titles)
+                            new_df = clean_db
+                            if aprovar:
+                                st.warning("Aprovado: '{}'".format(delete_blog_by_title))
+
+                            if remover:
+                                delete_data(delete_blog_by_title)
+                                st.warning("Removido: '{}'".format(delete_blog_by_title))
+
+
+
+
         else:
             st.warning("Usuário incorreto")
 
