@@ -5,18 +5,19 @@ import sqlite3
 con = sqlite3.connect('banco_programa.db')
 cursor = con.cursor()
 
+#cadastro de pesquisador, inicialmente chamado no código de user
 
 def create_usertable():
     cursor.execute('CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC)')
 
 
-def add_userdata(nome, senha, ocupacao, cpf):
-    cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf) VALUES (?,?,?,?)', (nome, senha, ocupacao, cpf))
+def add_userdata(nome, senha, ocupacao, cpf,situacao):
+    cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf, situacao) VALUES (?,?,?,?,?)', (nome, senha, ocupacao, cpf,situacao))
     con.commit()
 
 
-def login_user(nome, senha):
-    cursor.execute('SELECT * FROM pesquisador WHERE nome = ? AND senha = ?', (nome, senha))
+def login_user(nome, senha,situacao):
+    cursor.execute('SELECT * FROM pesquisador WHERE nome = ? AND senha = ? AND situacao = ?', (nome, senha, situacao))
     data = cursor.fetchall()
     return data
 
@@ -31,6 +32,15 @@ def login_presidente(nome, senha):
     cursor.execute('SELECT * FROM presidente WHERE nome = ? AND senha = ?', (nome, senha))
     data = cursor.fetchall()
     return data
+
+#registro de autenticação no banco
+#de Pesquisador!! AGORA VAI
+
+def add_data(nomex):
+
+    #cursor.execute('CREATE TABLE IF NOT EXISTS pesquisadores_aprovados(nome TEXT)')
+    cursor.execute(f'UPDATE pesquisador SET situacao = "aprovado" WHERE nome = "{nomex}" ')
+    con.commit()
 
 #cadastro da funcionára
 
@@ -62,23 +72,24 @@ if paginaSelecionada == 'Tela de inicio':
 
 
 elif paginaSelecionada == 'Área do Pesquisador':
-    st.sidebar.title("Login Funcionário")
+    st.sidebar.title("Login Pesquisador")
     funcionarios = st.sidebar.selectbox('Selecione o caminho', ['Login', 'Cadastro'])
 
     if funcionarios == 'Login':
         nome = st.sidebar.text_input('Insira seu nome')
         senha = st.sidebar.text_input('Insira a senha', type='password')
+        situacao = st.sidebar.selectbox('Situação ?', ['aprovado'])
         if st.sidebar.checkbox('Login'):
             # if input_senha_func == '1234':
             create_usertable()
-            result = login_user(nome, senha)
+            result = login_user(nome, senha,situacao)
             if result:
 
                 st.sidebar.title(f"Logado como: {nome}")
                 st.title(f'Bem vindo de Volta {nome}')
 
             else:
-                st.warning("Usuário incorreto")
+                st.warning("Usuário incorreto ou Não Aprovado")
 
     if funcionarios == 'Cadastro':
         st.title('Cadastro de Pesquisador')
@@ -86,13 +97,14 @@ elif paginaSelecionada == 'Área do Pesquisador':
         input_senha = st.text_input(label='Insira a senha', type="password")
         input_cpf = st.text_input(label='Insira o seu CPF')
         input_occupation = st.selectbox('selecione sua profissão', ['Pesquisador'])
+        situacao = st.sidebar.selectbox('Situação atual:', ['Não Aprovado'])
 
         if st.button("Enviar Dados"):
             create_usertable()
-            add_userdata(input_name, input_senha, input_occupation, input_cpf)
+            add_userdata(input_name, input_senha, input_occupation, input_cpf,situacao)
             st.success('Adicionado com sucesso !!')
             st.info("Vá para o menu de login!!")
-
+        
 
 elif paginaSelecionada == 'Login Secretária':
     st.sidebar.title("Login Secretária")
@@ -107,26 +119,27 @@ elif paginaSelecionada == 'Login Secretária':
                 st.title("Área da Secretária")
                 y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'NULL'])
                 if y == 'Aprovação de pesquisadores':
-                    recarregar = st.checkbox('Mostar Dados')
-                    if recarregar:
+                    tabela = st.checkbox('Mostar Dados')
+                    if tabela:
                         st.subheader('Pesquisadores em análise')
-                        resultado = cursor.execute('SELECT nome,cpf from pesquisador')
-                        clean_db = pd.DataFrame(resultado, columns=['Pesquisadores', 'cpf'])
-                        st.dataframe(clean_db)
+                        resultado = cursor.execute('SELECT nome,cpf,situacao from pesquisador')
+                        pesquisa = pd.DataFrame(resultado, columns=['Pesquisadores', 'CPF','Situação'])
+                        st.dataframe(pesquisa)
                         with st.form(key='include_cliente'):
                             st.subheader('Selecione o que deseja realizar')
                             aprovar = st.form_submit_button("Aprovar")
                             remover = st.form_submit_button("Remover")
 
                             unique_titles = [i[0] for i in view_all_titles()]
-                            delete_blog_by_title = st.selectbox("Pesquisadores", unique_titles)
-                            new_df = clean_db
+                            selecao = st.selectbox("Pesquisadores", unique_titles)
+                            new_df = resultado
                             if aprovar:
-                                st.warning("Aprovado: '{}'".format(delete_blog_by_title))
+                                add_data(selecao)
+                                st.warning("Aprovado: '{}'".format(selecao))
 
                             if remover:
-                                delete_data(delete_blog_by_title)
-                                st.warning("Removido: '{}'".format(delete_blog_by_title))
+                                delete_data(selecao)
+                                st.warning("Removido: '{}'".format(selecao))
 
 
 
@@ -159,9 +172,9 @@ elif paginaSelecionada == 'Login Presidente':
                     st.info("Vá para o menu de login!!")
             elif secretaria == 'Inicio':
                 st.title('Pagina do Diretor')
-                st.subheader('Lista de Secretárias ativas')
+                st.subheader('Lista de Secretárias')
                 dados_secretaria = cursor.execute('SELECT nome from secretaria2')
-                clean_db = pd.DataFrame(dados_secretaria, columns=['Secretárias:'])
+                clean_db = pd.DataFrame(dados_secretaria, columns=['Secretárias ativas'])
                 st.dataframe(clean_db)
 
 
