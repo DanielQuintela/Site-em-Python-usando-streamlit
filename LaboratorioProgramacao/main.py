@@ -8,7 +8,7 @@ cursor = con.cursor()
 #cadastro de pesquisador, inicialmente chamado no código de user
 
 def create_usertable():
-    cursor.execute('CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC, situacao TEXT)')
 
 
 def add_userdata(nome, senha, ocupacao, cpf,situacao):
