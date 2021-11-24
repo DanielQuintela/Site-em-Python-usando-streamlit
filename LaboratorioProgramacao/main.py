@@ -194,3 +194,43 @@ elif paginaSelecionada == 'Cadastro presidente':
         add_presidente(input_name, input_senha)
         st.success('Adicionado com sucesso !!')
         st.info("Vá para o menu de login!!")
+#esboço de front end, apenas pra teste
+
+else:
+    st.info()
+    novaimagem = st.text_input()
+    upload = st.button('upload')
+elif bio == 'Tela Principal' :
+    col1, col2 = st.beta_columns(2)
+
+with col1:
+    if novaimagem is not None:
+        val
+        for img in val.each():
+            img_choice = img.val()
+        st.image(img_choice, use_column_width=True)
+    else:
+        st.info()
+
+    post = st.text_input()
+    add_post = st.button()
+if add_post:
+    post = {'Post:' post,
+             'timestamp': dt_string}
+
+if push:
+    for usuário in todos_usuarios.each():
+        k =  usuário.val()[]
+
+        if k == choice:
+            lid = usuário.val()
+
+            nome_usuario = db.child(lid).child.get().val
+
+            if novaimagem is not None:
+                val = db.child(lid).child().get()
+                for img in val.each():
+                    img_choice = img>val()
+                    st.image(img_choice)
+            else:
+                st.info("nenhuma imagem encontrada")
