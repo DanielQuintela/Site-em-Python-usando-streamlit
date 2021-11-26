@@ -90,6 +90,11 @@ def addbanco_bioterio(cadastro_biot):
     cursor.execute('INSERT INTO bioterio VALUES (?)',(cadastro_biot,))
     con.commit()
 
+def view_all_bioterios():
+    cursor.execute('SELECT DISTINCT nome FROM bioterio')
+    data = cursor.fetchall()
+    return data
+
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
                                          ['Tela de inicio', 'Área do Pesquisador', 'Login Secretária',
                                           'Login Presidente'])
@@ -124,7 +129,8 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     input_dataterm = st.text_input(label='Insira a data prevista para o termino do experimento:')
                     input_especie = st.text_input(label='Insira a especie do animal')
                     input_qntanimal = st.text_input(label='Insira a quantidade de animais')
-                    _bioterio = st.selectbox('Escolha o Bioterio', ['Bioterios'])
+                    unique_titles = [i[0] for i in view_all_bioterios()]
+                    _bioterio = st.selectbox("Escolha o Bioterio", unique_titles)
                     if st.button('EMITIR'):
                         banco_protocolo()
                         addbanco_protocolo(input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio )
