@@ -87,7 +87,8 @@ def banco_bioterio():
     cursor.execute('CREATE TABLE IF NOT EXISTS bioterio(nome TEXT)')
 
 def addbanco_bioterio(cadastro_biot):
-    cursor.execute('INSERT INTO bioterio VALUES (?)',(cadastro_biot))
+    cursor.execute('INSERT INTO bioterio VALUES (?)',(cadastro_biot,))
+    con.commit()
 
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
                                          ['Tela de inicio', 'Área do Pesquisador', 'Login Secretária',
@@ -192,7 +193,7 @@ elif paginaSelecionada == 'Login Secretária':
                     cadastro_biot = st.text_input('Insira o nome do Bioterio')
                     if st.button('Cadastrar'):
                         banco_bioterio()
-                        '''addbanco_bioterio(cadastro_biot)'''
+                        addbanco_bioterio(cadastro_biot)
                         st.success('Bioterio Cadastrado!')
 
         else:
