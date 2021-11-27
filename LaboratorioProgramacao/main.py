@@ -95,6 +95,10 @@ def view_all_bioterios():
     data = cursor.fetchall()
     return data
 
+def add_especie(nomex,nome_especie):
+    cursor.execute('UPDATE bioterio SET animais = IIF(animais IS NULL, "{}", animais || " " || "{}" ) WHERE nome = "{}"'.format(nome_especie, nome_especie,nomex))
+    con.commit()
+
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
                                          ['Tela de inicio', 'Área do Pesquisador', 'Login Secretária',
                                           'Login Presidente'])
@@ -174,7 +178,7 @@ elif paginaSelecionada == 'Login Secretária':
             if login_secretaria:
                 st.sidebar.title('Secretária logada')
                 st.title("Área da Secretária")
-                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'Cadastrar Bioterios'])
+                y = st.selectbox('Escolha um caminho', ['Aprovação de pesquisadores', 'Cadastrar Bioterios', 'Cadastrar Espécie'])
                 if y == 'Aprovação de pesquisadores':
                     tabela = st.checkbox('Mostar Dados')
                     if tabela:
@@ -205,9 +209,20 @@ elif paginaSelecionada == 'Login Secretária':
                         addbanco_bioterio(cadastro_biot)
                         st.success('Bioterio Cadastrado!')
 
+                if y == 'Cadastrar Espécie':
+                    with st.form(key='cadastro_animais'):
+                      st.subheader('Cadastre uma espécie em um dos biotérios')
+                      nome_especie = st.text_input('Digite o nome da espécie')
+                      Adicionar = st.form_submit_button("Adicionar")
+                    # TODO placeholder, mudar nome da tabela e coluna quando receber lista de bioterio
+                      unique_titles = [i[0] for i in view_all_bioterios()]
+                      selecao = st.selectbox("Bioterios", unique_titles)
+                      if Adicionar:
+                         add_especie(selecao, nome_especie +"")
+                         st.warning(f"Espécie {nome_especie} Cadastrada!!")
+
         else:
             st.warning("Usuário incorreto")
-
 
 
 elif paginaSelecionada == 'Login Presidente':
