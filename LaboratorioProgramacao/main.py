@@ -97,7 +97,7 @@ def view_all_bioterios():
     return data
 
 def add_especie(nomex,nome_especie):
-    cursor.execute('UPDATE bioterio SET animais = IIF(animais IS NULL, "{}", animais || " " || "{}" ) WHERE nome = "{}"'.format(nome_especie, nome_especie,nomex))
+    cursor.execute(f'UPDATE bioterio SET animais = IIF(animais IS NULL, "{nome_especie}", animais || " " || "{nome_especie}" ) WHERE nome = "{nomex}"')
     con.commit()
 
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
