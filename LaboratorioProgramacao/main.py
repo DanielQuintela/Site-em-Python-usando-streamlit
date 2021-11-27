@@ -11,7 +11,8 @@ def create_usertable():
     cursor.execute(
         'CREATE TABLE IF NOT EXISTS pesquisador(nome TEXT,senha TEXT,ocupacao TEXT, cpf NUMERIC UNIQUE, situacao TEXT)')
 
-def add_userdata(nome, senha, ocupacao, cpf, situacao):
+def add_userdata(nome, senha, ocupacao, cpf):
+    situacao = "Não Aprovado"
     cursor.execute('INSERT INTO pesquisador(nome,senha,ocupacao, cpf, situacao) VALUES (?,?,?,?,?)',
                    (nome, senha, ocupacao, cpf, situacao))
     con.commit()
@@ -40,7 +41,7 @@ def login_presidente(nome, senha):
 
 def add_data(nomex):
     # cursor.execute('CREATE TABLE IF NOT EXISTS pesquisadores_aprovados(nome TEXT)')
-    cursor.execute(f'UPDATE pesquisador SET situacao = "aprovado" WHERE nome = "{nomex}" ')
+    cursor.execute(f'UPDATE pesquisador SET situacao = "Aprovado" WHERE nome = "{nomex}" ')
     con.commit()
 
 # cadastro da funcionára
@@ -84,10 +85,10 @@ def addbanco_protocolo(input_justificativa,input_resumopt,input_resumoig,input_d
     con.commit()
 # cr
 def banco_bioterio():
-    cursor.execute('CREATE TABLE IF NOT EXISTS bioterio(nome TEXT NOT NULL UNIQUE)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS bioterio(nome TEXT NOT NULL UNIQUE, animais TEXT UNIQUE)')
 
 def addbanco_bioterio(cadastro_biot):
-    cursor.execute('INSERT INTO bioterio VALUES (?)',(cadastro_biot,))
+    cursor.execute('INSERT INTO bioterio(nome) VALUES (?)',[cadastro_biot])
     con.commit()
 
 def view_all_bioterios():
@@ -114,7 +115,7 @@ elif paginaSelecionada == 'Área do Pesquisador':
     if funcionarios == 'Login':
         nome = st.sidebar.text_input('Insira seu nome')
         senha = st.sidebar.text_input('Insira a senha', type='password')
-        situacao = st.sidebar.selectbox('Situação ?', ['aprovado'])
+        situacao = "Aprovado"
         if st.sidebar.checkbox('Login'):
             # if input_senha_func == '1234':
             create_usertable()
@@ -158,11 +159,10 @@ elif paginaSelecionada == 'Área do Pesquisador':
         input_senha = st.text_input(label='Insira a senha', type="password")
         input_cpf = st.text_input(label='Insira o seu CPF')
         input_occupation = st.selectbox('selecione sua profissão', ['Pesquisador'])
-        situacao = st.sidebar.selectbox('Situação atual:', ['Não Aprovado'])
 
         if st.button("Enviar Dados"):
             create_usertable()
-            add_userdata(input_name, input_senha, input_occupation, input_cpf, situacao)
+            add_userdata(input_name, input_senha, input_occupation, input_cpf)
             st.success('Adicionado com sucesso !!')
             st.info("Vá para o menu de login!!")
 
