@@ -161,6 +161,7 @@ paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
+    st.text("Para o desempenho e funcionamento do site, foi usado a linguagem python para execução do projeto. O projeto em si é focado na apresentação de um laboratório que realizar testes em bioterios animais. Encima do solicitado, desenvolvemos a página inicial uma simples tabela,indicando os animais que chegam a ser usados nos testes e suas quantidades, além disso, o usuário pode inserir seu nome como forma de salvar seu registro no site e assim manusea-lo. Para manter o site,  é preciso que na empresa tenhamos da secretária, dos pesquisadores e logo, o predisente de laboratório. Para separarmos cada tipo de usuário logado, foi criada uma interface para especifica-los em cada tipo de login. O login da secretária acaba sendo um login normal, desde que seja ainda como parte do banco de dados do laboratório. A interface de login do pesquisador acaba sendo outro login normal, mas diferente da secretária, ele exerce um papel maior,logo tendo um cadastro especial. Entretanto, o presidente possui um cadastro único, onde adquire a ele todo o acesso ao banco de dados do site, tendo em si todo o balanceamento da situação  do website. Em si, todos possuem caixas para cadastrar sendo usuários e um sistema de armazenamento de dados, guardando o login de cada um.")
 
 
 elif paginaSelecionada == 'Área do Pesquisador':
