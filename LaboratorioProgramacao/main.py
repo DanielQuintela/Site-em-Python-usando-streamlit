@@ -126,7 +126,7 @@ def add_especie(nomex,nome_especie):
 
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
                                          ['Tela de inicio', 'Área do Pesquisador', 'Login Secretária',
-                                          'Login Presidente'])
+                                          'Login Presidente', 'Área do Gerente de TI'])
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
@@ -340,31 +340,37 @@ elif paginaSelecionada == 'Login Presidente':
         else:
             st.warning("Usuário incorreto")
 
+elif paginaSelecionada == 'Área do Gerente de TI':
+    senha1 = st.sidebar.text_input('Insira a senha', type='password')
+    if st.sidebar.checkbox('Login'):
+        if senha1 == '123459':
+            selecao = st.selectbox('Escolha a opção desejada caro gerente acima do Presidente rsrs',
+                                   ['Cadastro presidente','Cadastro de Secretária'])
 
-# esse elif é para fica oculto do sistema.
-# apenas para o cadastro do presidente
-elif paginaSelecionada == 'Cadastro presidente':
-    # só pra quebrar o galho no banco
-    st.title('Cadastro de Presidente')
-    input_name = st.text_input(label='Insira o seu nome')
-    input_senha = st.text_input(label='Insira a senha', type="password")
+        # esse elif não é mais para fica oculto do sistema.
+        # apenas para o cadastro do presidente
+            if selecao == 'Cadastro presidente':
+        # só pra quebrar o galho no banco
+                st.title('Cadastro de Presidente')
+                input_name = st.text_input(label='Insira o seu nome')
+                input_senha = st.text_input(label='Insira a senha.', type="password")
 
-    if st.button("Enviar Dados"):
-        create_presdenttable()
-        add_presidente(input_name, input_senha)
-        st.success('Adicionado com sucesso !!')
-        st.info("Vá para o menu de login!!")
+                if st.button("Enviar Dados"):
+                    create_presdenttable()
+                    add_presidente(input_name, input_senha)
+                    st.success('Adicionado com sucesso !!')
+                    st.info("Vá para o menu de login!!")
 
 
-# esse elif é para fica oculto do sistema.
-# apenas para o cadastro da secretária
+        # esse elif não é mais para fica oculto do sistema.
+        # apenas para o cadastro da secretária
 
-elif paginaSelecionada == 'Cadastro de Secretária':
-    st.title('Cadastro de Secretaria')
-    input_name = st.text_input(label='Insira o seu nome')
-    input_senha = st.text_input(label='Insira sua senha', type="password")
-    if st.button("Enviar Dados"):
-        create_secretaria()
-        add_secretaria(input_name, input_senha)
-        st.success(f'{input_name} Adicionada com sucesso !!')
-        st.info("Vá para o menu de login!!")
+            elif selecao == 'Cadastro de Secretária':
+                st.title('Cadastro de Secretaria')
+                input_name = st.text_input(label='Insira o seu nome')
+                input_senha = st.text_input(label='Insira sua senha', type="password")
+                if st.button("Enviar Dados"):
+                    create_secretaria()
+                    add_secretaria(input_name, input_senha)
+                    st.success(f'{input_name} Adicionada com sucesso !!')
+                    st.info("Vá para o menu de login!!")
