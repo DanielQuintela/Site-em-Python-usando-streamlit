@@ -124,6 +124,11 @@ def add_especie(nomex,nome_especie):
     cursor.execute(f'UPDATE bioterio SET animais = IIF(animais IS NULL, "{nome_especie}", animais || " " || "{nome_especie}" ) WHERE nome = "{nomex}"')
     con.commit()
 
+def view_all_especies():
+    cursor.execute('SELECT DISTINCT animais FROM bioterio')
+    data = cursor.fetchall()
+    return data
+
 paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
                                          ['Tela de inicio', 'Área do Pesquisador', 'Login Secretária',
                                           'Login Presidente', 'Área do Gerente de TI'])
@@ -191,7 +196,8 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     input_resumoig = st.text_input(label='Insira o resumo do trabalho em inglês')
                     input_datainicio = st.date_input(label='Insira a data prevista para o inicio do experimento:')
                     input_dataterm = st.date_input(label='Insira a data prevista para o termino do experimento:')
-                    input_especie = st.text_input(label='Insira a especie do animal')
+                    input_especie = [i[0] for i in view_all_especies()]
+                    selecao = st.selectbox("Insira a especie do animal", input_especie)
                     input_qntanimal = st.text_input(label='Insira a quantidade de animais')
                     unique_titles = [i[0] for i in view_all_bioterios()]
                     _bioterio = st.selectbox("Escolha o Bioterio", unique_titles)
