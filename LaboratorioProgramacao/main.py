@@ -161,6 +161,7 @@ paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
+    st.text('Seja Bem Vindo !!')
     st.text("O site é focado na apresentação de um laboratório que "
             "\nrealiza testes em animais nos bioterios. Neste site esta desenvolvido algumas"
             "\nfunções, indicando os animais que chegam a ser usados nos testes e "
