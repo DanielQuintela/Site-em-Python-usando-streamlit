@@ -179,6 +179,9 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     st.title('Receber protocolo')
                     input_parecer = st.text_input(label='Descreva seu parecer')
                     recomendar = st.selectbox('Escolha a opção',['Recomendado','Não Recomendado'])
+                    if st.button('Enviar Parecer'):
+
+                        st.success('Parecer enviado!')
 
             else:
                 st.warning("Usuário incorreto ou Não Aprovado")
@@ -274,6 +277,9 @@ elif paginaSelecionada == 'Login Presidente':
                 dados_secretaria = cursor.execute('SELECT nome from secretaria2')
                 clean_db = pd.DataFrame(dados_secretaria, columns=['Secretárias ativas'])
                 st.dataframe(clean_db)
+
+            if escolha == 'Analise de Relatorios':
+                st.title('Analise de Relatorios')
 
 
         else:
