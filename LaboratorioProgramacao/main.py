@@ -73,7 +73,7 @@ def delete_data(resultado):
 
 # Criação do banco de protocolo
 def banco_protocolo():
-    cursor.execute('CREATE TABLE IF NOT EXISTS protocolos(nomeUsuario TEXT NOT NULL, titulo TEXT NOT NULL UNIQUE,justificativa TEXT NOT NULL ,resumo_portugues TEXT, resumo_ingles TEXT,'
+    cursor.execute('CREATE TABLE IF NOT EXISTS protocolos(nome TEXT NOT NULL, titulo TEXT NOT NULL UNIQUE,justificativa TEXT NOT NULL ,resumo_portugues TEXT, resumo_ingles TEXT,'
                    'data_inicio TEXT,data_fim TEXT, especie TEXT NOT NULL, quantidade_animais TEXT NOT NULL, bioterio TEXT NOT NULL, situacao TEXT)')
 
 def addbanco_protocolo(nome, titulo, input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
