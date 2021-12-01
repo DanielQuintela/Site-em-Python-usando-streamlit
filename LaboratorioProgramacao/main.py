@@ -106,7 +106,6 @@ paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
-    st.title('Tela principal')
     st.write("""
     Sistema para Controle de Experiência Animal\r
     Biotério Animal
