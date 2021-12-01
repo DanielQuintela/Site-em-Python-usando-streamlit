@@ -73,15 +73,39 @@ def delete_data(resultado):
 
 # Criação do banco de protocolo
 def banco_protocolo():
-    cursor.execute('CREATE TABLE IF NOT EXISTS protocolos(justificativa TEXT NOT NULL ,resumo_portugues TEXT, resumo_ingles TEXT,'
+    cursor.execute('CREATE TABLE IF NOT EXISTS protocolos(nomeUsuario TEXT NOT NULL, titulo TEXT NOT NULL UNIQUE,justificativa TEXT NOT NULL ,resumo_portugues TEXT, resumo_ingles TEXT,'
                    'data_inicio TEXT,data_fim TEXT, especie TEXT NOT NULL, quantidade_animais TEXT NOT NULL, bioterio TEXT NOT NULL, situacao TEXT)')
 
-def addbanco_protocolo(input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
-                       input_qntanimal,_bioterio ):
-    cursor.execute('INSERT INTO protocolos(justificativa,resumo_portugues,resumo_ingles,data_inicio,data_fim,'
-                   'especie,quantidade_animais,bioterio) VALUES (?,?,?,?,?,?,?,?)',
-                   (input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
-                    input_qntanimal,_bioterio ))
+def addbanco_protocolo(nome, titulo, input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
+                       input_qntanimal,_bioterio, situacao ):
+    cursor.execute('INSERT INTO protocolos(nome,titulo, justificativa,resumo_portugues,resumo_ingles,data_inicio,data_fim,'
+                   'especie,quantidade_animais,bioterio, situacao) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+                   (nome,titulo, input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
+                    input_qntanimal,_bioterio,situacao))
+    con.commit()
+
+def view_all_protocolo(nome):
+    cursor.execute(f'SELECT DISTINCT titulo FROM protocolos WHERE nome != "{nome}" AND situacao = "Em Espera" ')
+    data = cursor.fetchall()
+    return data
+
+def view_all_protocoloPresidente(nome):
+    cursor.execute(f'SELECT DISTINCT titulo FROM protocolos WHERE (situacao = "Recomendado" OR situacao = "Não Recomendado") AND nome!= "{nome}"')
+    data = cursor.fetchall()
+    return data
+
+def recomendar_protocolo(titulo):
+    cursor.execute(f'UPDATE protocolos SET situacao = "Recomendado" WHERE titulo = "{titulo}"')
+    con.commit()
+def descomendar_protocolo(titulo):
+    cursor.execute(f'UPDATE protocolos SET situacao = "Não Recomendado" WHERE titulo ="{titulo}"')
+    con.commit()
+
+def aprovar_protocolo(titulo):
+    cursor.execute(f'UPDATE protocolos SET situacao = "Aprovado" WHERE titulo = "{titulo}"')
+    con.commit()
+def negar_protocolo(titulo):
+    cursor.execute(f'UPDATE protocolos SET situacao = "Negado" WHERE titulo ="{titulo}"')
     con.commit()
 # cr
 def banco_bioterio():
@@ -159,7 +183,9 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     st.title('Página inicial do pesquisador')
                     st.text('Selecione uma opção acima para começar os trabalhos !!')
                 if area_pesq == 'Emitir Protocolo':
+                    banco_bioterio()
                     st.title('Emitir Protocolo')
+                    input_titulo = st.text_input(label = "Título deste Protocolo")
                     input_justificativa = st.text_input(label='Justificativa para o uso de animais')
                     input_resumopt = st.text_input(label='Insira o resumo do trabalho em português')
                     input_resumoig = st.text_input(label='Insira o resumo do trabalho em inglês')
@@ -171,17 +197,27 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     _bioterio = st.selectbox("Escolha o Bioterio", unique_titles)
                     if st.button('Emitir Protocolo'):
                         banco_protocolo()
-                        addbanco_protocolo(input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio )
+                        situacao = "Em Espera"
+                        addbanco_protocolo(nome,input_titulo,input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio,situacao )
                         st.success('Protocolo Emitido!')
 
-
                 if area_pesq == 'Receber protocolo':
-                    st.title('Receber protocolo')
-                    input_parecer = st.text_input(label='Descreva seu parecer')
-                    recomendar = st.selectbox('Escolha a opção',['Recomendado','Não Recomendado'])
-
-                    if st.button('Enviar Parecer'):
-                        st.success('Parecer enviado!')
+                    st.subheader('Receber protocolo')
+                    lista_de_protocolo = cursor.execute(f'SELECT nome,titulo,situacao FROM protocolos  WHERE nome != "{nome}" AND situacao = "Em Espera"')
+                    lista_data_protocolo = pd.DataFrame(lista_de_protocolo, columns=['nome', 'titulo', 'situacao'])
+                    st.dataframe(lista_data_protocolo)
+                    with st.form(key='include_protocolo', clear_on_submit = True):
+                        st.subheader('Selecione o que deseja realizar')
+                        unique_titles = [i[0] for i in view_all_protocolo(nome)]
+                        selecao = st.selectbox("Protocolos", unique_titles)
+                        aprovar = st.form_submit_button("Recomendar")
+                        desaprovar = st.form_submit_button("Não Recomendar")
+                        if aprovar:
+                            recomendar_protocolo(selecao)
+                            st.warning("Você Recomendou: '{}' Com Sucesso!".format(selecao))
+                        if desaprovar:
+                            descomendar_protocolo(selecao)
+                            st.warning("Você Marcou: '{}' Como Não Recomendado".format(selecao))
 
             else:
                 st.warning("Usuário incorreto ou Não Aprovado")
@@ -277,6 +313,21 @@ elif paginaSelecionada == 'Login Presidente':
 
             if escolha == 'Analise de Relatorios':
                 st.title('Analise de Relatorios')
+                lista_de_protocolo = cursor.execute(f'SELECT nome,titulo,situacao FROM protocolos WHERE (situacao = "Recomendado" OR situacao = "Não Recomendado") AND nome!= "{nome}"')
+                lista_data_protocolo = pd.DataFrame(lista_de_protocolo, columns=['nome', 'titulo', 'situacao'])
+                st.dataframe(lista_data_protocolo)
+                with st.form(key='aprove_protocolo', clear_on_submit = True):
+                    st.subheader('Selecione o que deseja realizar')
+                    unique_titles = [i[0] for i in view_all_protocoloPresidente(nome)]
+                    selecao = st.selectbox("Protocolos", unique_titles)
+                    aprovar = st.form_submit_button("Aprovar")
+                    negar = st.form_submit_button("Negar")
+                    if aprovar:
+                        aprovar_protocolo(selecao)
+                        st.warning("Você Aprovou de: '{}' Com Sucesso! Pobres Animais!".format(selecao))
+                    if negar:
+                        negar_protocolo(selecao)
+                        st.warning("Você Negou: '{}' , Os Animais Foram Salvos!".format(selecao))
 
             if escolha == 'Secretárias Ativas':
                 st.text('Nesta seleção podemos ver as secrétárias atuantes na empresa')
