@@ -174,7 +174,7 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     if st.button('Emitir Protocolo'):
                         banco_protocolo()
                         situacao = "Em Espera"
-                        addbanco_protocolo(nome,input_titulo,input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio,situacao )
+                        addbanco_protocolo(nome,input_titulo,input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,selecao ,input_qntanimal,_bioterio,situacao )
                         st.success('Protocolo Emitido!')
 
                 if area_pesq == 'Receber protocolo':
