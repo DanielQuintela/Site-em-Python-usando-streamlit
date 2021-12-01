@@ -164,8 +164,6 @@ if paginaSelecionada == 'Tela de inicio':
     st.text("Para o desempenho e funcionamento do site, foi usado a linguagem python para execução do projeto. O projeto em si é focado na apresentação de um laboratório que realizar testes em bioterios animais. Encima do solicitado, desenvolvemos a página inicial uma simples tabela,indicando os animais que chegam a ser usados nos testes e suas quantidades, além disso, o usuário pode inserir seu nome como forma de salvar seu registro no site e assim manusea-lo. Para manter o site,  é preciso que na empresa tenhamos da secretária, dos pesquisadores e logo, o predisente de laboratório. Para separarmos cada tipo de usuário logado, foi criada uma interface para especifica-los em cada tipo de login. O login da secretária acaba sendo um login normal, desde que seja ainda como parte do banco de dados do laboratório. A interface de login do pesquisador acaba sendo outro login normal, mas diferente da secretária, ele exerce um papel maior,logo tendo um cadastro especial. Entretanto, o presidente possui um cadastro único, onde adquire a ele todo o acesso ao banco de dados do site, tendo em si todo o balanceamento da situação  do website. Em si, todos possuem caixas para cadastrar sendo usuários e um sistema de armazenamento de dados, guardando o login de cada um.")
 
 
-
-
 elif paginaSelecionada == 'Área do Pesquisador':
     st.sidebar.title("Login Pesquisador")
     funcionarios = st.sidebar.selectbox('Selecione o caminho', ['Login', 'Cadastro'])
@@ -211,7 +209,7 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     lista_de_protocolo = cursor.execute(f'SELECT nome,titulo,situacao FROM protocolos  WHERE nome != "{nome}" AND situacao = "Em Espera"')
                     lista_data_protocolo = pd.DataFrame(lista_de_protocolo, columns=['nome', 'titulo', 'situacao'])
                     st.dataframe(lista_data_protocolo)
-                    with st.form(key='include_protocolo'):
+                    with st.form(key='include_protocolo', clear_on_submit = True):
                         st.subheader('Selecione o que deseja realizar')
                         unique_titles = [i[0] for i in view_all_protocolo(nome)]
                         selecao = st.selectbox("Protocolos", unique_titles)
@@ -282,6 +280,11 @@ elif paginaSelecionada == 'Login Secretária':
 
                 if y == 'Cadastrar Bioterios':
                     cadastro_biot = st.text_input('Insira o nome do Bioterio')
+                    cadastro_biot = st.text_input('Insira o nome do Biotério')
+                    cadastro_biot_end = st.text_input('Informe o endereço completo, com número, CEP e bairro')
+                    cadastro_biot_cid = st.text_input('Informe a cidade e o estado que o biotério está localizado')
+                    cadastro_biot_res = st.text_input('Informe quem é o responsável técnico')
+                    cadastro_biot_email = st.text_input('Endereço de e-mail do biotério?')
                     if st.button('Cadastrar'):
                         banco_bioterio()
                         addbanco_bioterio(cadastro_biot)
@@ -325,7 +328,7 @@ elif paginaSelecionada == 'Login Presidente':
                 lista_de_protocolo = cursor.execute(f'SELECT nome,titulo,situacao FROM protocolos WHERE (situacao = "Recomendado" OR situacao = "Não Recomendado") AND nome!= "{nome}"')
                 lista_data_protocolo = pd.DataFrame(lista_de_protocolo, columns=['nome', 'titulo', 'situacao'])
                 st.dataframe(lista_data_protocolo)
-                with st.form(key='aprove_protocolo'):
+                with st.form(key='aprove_protocolo', clear_on_submit = True):
                     st.subheader('Selecione o que deseja realizar')
                     unique_titles = [i[0] for i in view_all_protocoloPresidente(nome)]
                     selecao = st.selectbox("Protocolos", unique_titles)
