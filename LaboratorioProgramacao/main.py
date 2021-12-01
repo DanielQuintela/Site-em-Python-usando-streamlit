@@ -107,6 +107,32 @@ def aprovar_protocolo(titulo):
 def negar_protocolo(titulo):
     cursor.execute(f'UPDATE protocolos SET situacao = "Negado" WHERE titulo ="{titulo}"')
     con.commit()
+
+def read_protocolo (nome, titulo, justificativa, resumo_pt,resumo_en,input_datainicio,input_dataterm ,input_especie ,
+                       input_qntanimal,_bioterio, situacao):
+    st.subheader("Nome do Pesquisador")
+    st.write(nome)
+    st.subheader("Título do Protocolo")
+    st.write(titulo)
+    st.subheader("Justificativa")
+    st.write(justificativa)
+    st.subheader("Resumo em Português")
+    st.write(resumo_pt)
+    st.subheader("Resumo em Inglês")
+    st.write(resumo_en)
+    st.subheader("Data de Inicio")
+    st.write(input_datainicio)
+    st.subheader("Data de Término")
+    st.write(input_dataterm)
+    st.subheader("Espécies Selecionadas")
+    st.write(input_especie)
+    st.subheader("Quantidade de Animais")
+    st.write(input_qntanimal)
+    st.subheader("Biotério")
+    st.write(_bioterio)
+    st.subheader("Situação do Protocolo")
+    st.write(situacao)
+
 # cr
 def banco_bioterio():
     cursor.execute('CREATE TABLE IF NOT EXISTS bioterio(nome TEXT NOT NULL UNIQUE, animais TEXT UNIQUE)')
@@ -186,6 +212,10 @@ elif paginaSelecionada == 'Área do Pesquisador':
                         st.subheader('Selecione o que deseja realizar')
                         unique_titles = [i[0] for i in view_all_protocolo(nome)]
                         selecao = st.selectbox("Protocolos", unique_titles)
+                        if st.form_submit_button("Mostrar Dados"):
+                            justificativa = cursor.execute(
+                                f'SELECT * FROM protocolos WHERE titulo = "{selecao}"').fetchone()
+                            read_protocolo(*justificativa)
                         aprovar = st.form_submit_button("Recomendar")
                         desaprovar = st.form_submit_button("Não Recomendar")
                         if aprovar:
@@ -296,6 +326,10 @@ elif paginaSelecionada == 'Login Presidente':
                     st.subheader('Selecione o que deseja realizar')
                     unique_titles = [i[0] for i in view_all_protocoloPresidente(nome)]
                     selecao = st.selectbox("Protocolos", unique_titles)
+                    if st.form_submit_button("Mostrar Dados"):
+                        justificativa = cursor.execute(
+                            f'SELECT * FROM protocolos WHERE titulo = "{selecao}"').fetchone()
+                        read_protocolo(*justificativa)
                     aprovar = st.form_submit_button("Aprovar")
                     negar = st.form_submit_button("Negar")
                     if aprovar:
