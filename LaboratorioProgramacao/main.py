@@ -248,10 +248,17 @@ elif paginaSelecionada == 'Login Secretária':
                                 st.warning("Removido: '{}'".format(selecao))
 
                 if y == 'Cadastrar Bioterios':
-                    cadastro_biot = st.text_input('Insira o nome do Bioterio')
+                    biot_nome = st.text_input('Insira o nome do Bioterio')
+                    biot_endereco = st.text_input('Informe o endereço do biotério')
+                    biot_cep = st.text_input('Informe o CEP')
+                    biot_cidade = st.text_input('Informe a cidade de onde é o biotério')
+                    biot_estado = st.text_input('Informe o estado (UF) do biotério')
+                    biot_pais = st.text_input('Informe o país de onde está o biotério')                            
+                    biot_resp = st.text_input('Quem é o responsável técnico?')
+                    biot_email = st.text_input('Informe o e-mail do biotério')
                     if st.button('Cadastrar'):
                         banco_bioterio()
-                        addbanco_bioterio(cadastro_biot)
+                        addbanco_bioterio(biot_nome,biot_endereco,biot_cep,biot_cidade,biot_estado,biot_pais,biot_resp,biot_email)
                         st.success('Bioterio Cadastrado!')
 
                 if y == 'Cadastrar Espécie':
