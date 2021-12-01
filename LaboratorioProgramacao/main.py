@@ -73,15 +73,27 @@ def delete_data(resultado):
 
 # Criação do banco de protocolo
 def banco_protocolo():
-    cursor.execute('CREATE TABLE IF NOT EXISTS protocolos(justificativa TEXT NOT NULL ,resumo_portugues TEXT, resumo_ingles TEXT,'
+    cursor.execute('CREATE TABLE IF NOT EXISTS protocolos(nomeUsuario TEXT NOT NULL, titulo TEXT NOT NULL UNIQUE,justificativa TEXT NOT NULL ,resumo_portugues TEXT, resumo_ingles TEXT,'
                    'data_inicio TEXT,data_fim TEXT, especie TEXT NOT NULL, quantidade_animais TEXT NOT NULL, bioterio TEXT NOT NULL, situacao TEXT)')
 
-def addbanco_protocolo(input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
-                       input_qntanimal,_bioterio ):
-    cursor.execute('INSERT INTO protocolos(justificativa,resumo_portugues,resumo_ingles,data_inicio,data_fim,'
-                   'especie,quantidade_animais,bioterio) VALUES (?,?,?,?,?,?,?,?)',
-                   (input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
-                    input_qntanimal,_bioterio ))
+def addbanco_protocolo(nome, titulo, input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
+                       input_qntanimal,_bioterio, situacao ):
+    cursor.execute('INSERT INTO protocolos(nome,titulo, justificativa,resumo_portugues,resumo_ingles,data_inicio,data_fim,'
+                   'especie,quantidade_animais,bioterio, situacao) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+                   (nome,titulo, input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,
+                    input_qntanimal,_bioterio,situacao))
+    con.commit()
+
+def view_all_protocolo(nome):
+    cursor.execute(f'SELECT DISTINCT titulo FROM protocolos WHERE nome != "{nome}" AND situacao = "Em Espera" ')
+    data = cursor.fetchall()
+    return data
+
+def recomendar_protocolo(titulo):
+    cursor.execute(f'UPDATE protocolos SET situacao = "Recomendado" WHERE titulo = "{titulo}"')
+    con.commit()
+def descomendar_protocolo(titulo):
+    cursor.execute(f'UPDATE protocolos SET situacao = "Não Recomendado" WHERE titulo ="{titulo}"')
     con.commit()
 # cr
 def banco_bioterio():
@@ -159,7 +171,9 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     st.title('Página inicial do pesquisador')
                     st.text('Selecione uma opção acima para começar os trabalhos !!')
                 if area_pesq == 'Emitir Protocolo':
+                    banco_bioterio()
                     st.title('Emitir Protocolo')
+                    input_titulo = st.text_input(label = "Título deste Protocolo")
                     input_justificativa = st.text_input(label='Justificativa para o uso de animais')
                     input_resumopt = st.text_input(label='Insira o resumo do trabalho em português')
                     input_resumoig = st.text_input(label='Insira o resumo do trabalho em inglês')
@@ -171,17 +185,29 @@ elif paginaSelecionada == 'Área do Pesquisador':
                     _bioterio = st.selectbox("Escolha o Bioterio", unique_titles)
                     if st.button('Emitir Protocolo'):
                         banco_protocolo()
-                        addbanco_protocolo(input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio )
+                        situacao = "Em Espera"
+                        addbanco_protocolo(nome,input_titulo,input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio,situacao )
                         st.success('Protocolo Emitido!')
 
 
-                if area_pesq == 'Receber protocolo':
-                    st.title('Receber protocolo')
-                    input_parecer = st.text_input(label='Descreva seu parecer')
-                    recomendar = st.selectbox('Escolha a opção',['Recomendado','Não Recomendado'])
-
-                    if st.button('Enviar Parecer'):
-                        st.success('Parecer enviado!')
+                if area_pesq == 'Emitir Protocolo':
+                    banco_bioterio()
+                    st.title('Emitir Protocolo')
+                    input_titulo = st.text_input(label = "Título deste Protocolo")
+                    input_justificativa = st.text_input(label='Justificativa para o uso de animais')
+                    input_resumopt = st.text_input(label='Insira o resumo do trabalho em português')
+                    input_resumoig = st.text_input(label='Insira o resumo do trabalho em inglês')
+                    input_datainicio = st.date_input(label='Insira a data prevista para o inicio do experimento:')
+                    input_dataterm = st.date_input(label='Insira a data prevista para o termino do experimento:')
+                    input_especie = st.text_input(label='Insira a especie do animal')
+                    input_qntanimal = st.text_input(label='Insira a quantidade de animais')
+                    unique_titles = [i[0] for i in view_all_bioterios()]
+                    _bioterio = st.selectbox("Escolha o Bioterio", unique_titles)
+                    if st.button('Emitir Protocolo'):
+                        banco_protocolo()
+                        situacao = "Em Espera"
+                        addbanco_protocolo(nome,input_titulo,input_justificativa,input_resumopt,input_resumoig,input_datainicio,input_dataterm ,input_especie ,input_qntanimal,_bioterio,situacao )
+                        st.success('Protocolo Emitido!')
 
             else:
                 st.warning("Usuário incorreto ou Não Aprovado")
