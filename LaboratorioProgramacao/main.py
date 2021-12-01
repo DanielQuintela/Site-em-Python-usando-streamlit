@@ -106,6 +106,36 @@ paginaSelecionada = st.sidebar.selectbox('Selecione o caminho',
 
 if paginaSelecionada == 'Tela de inicio':
     st.title('Tela principal')
+    st.write("""
+    Sistema para Controle de Experiência Animal\r
+    Biotério Animal
+    """)
+    st.subheader('Dados Informados')
+    st.write('Animais Usados em Testes:', )
+
+
+
+
+    def get_user_data():
+        rato = st.sidebar.slider('Ratos', 0, 30, 50)
+        camundongo = st.sidebar.slider('Camundongos', 0, 100, 200)
+        coelho = st.sidebar.slider('Coelhos', 0, 100, 200)
+        ovelha = st.sidebar.slider('Ovelhas', 0, 100, 200)
+        cobra = st.sidebar.slider('Cobras', 0, 50, 100)
+
+        user_data = {'Ratos': rato,
+                     'Camundongos': camundongo,
+                     'Coelhos': coelho,
+                     'Ovelhas': ovelha,
+                     'Cobras': cobra,
+
+                     }
+        features = pd.DataFrame(user_data, index=[0])
+        return features
+
+
+    user_input_variavel = get_user_data()
+    graf = st.bar_chart(user_input_variavel)
 
 
 elif paginaSelecionada == 'Área do Pesquisador':
